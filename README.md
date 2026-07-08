@@ -44,15 +44,7 @@ CLERK_JWT_ISSUER=https://your-clerk-domain.clerk.accounts.dev
 
 Enable Google, Apple, email/password, or other social providers in the Clerk dashboard under **User & Authentication > Social Connections**. Apple login requires Apple Developer credentials inside Clerk.
 
-To enable the Basic $9/month upgrade button, create a recurring monthly Stripe Price for `$9.00` and set:
-
-```bash
-STRIPE_SECRET_KEY=sk_live_or_test_...
-STRIPE_BASIC_PRICE_ID=price_...
-APP_BASE_URL=https://your-domain.com
-```
-
-Without Stripe settings, the app still enforces the free 2/day limit and shows a setup message when checkout is clicked.
+Stripe billing is optional and currently disabled in the user flow so the site can launch without payment setup. The app still enforces the daily free usage limit.
 
 4. Run the app (starts the Python API on port 3001 and Vite on 5173):
 
@@ -80,15 +72,15 @@ server/
 | `/api/usage` | GET | Current plan and daily free usage |
 | `/api/search?q=AAPL` | GET | Stock symbol autocomplete |
 | `/api/analyze` | POST | First anonymous analysis is allowed, then Clerk auth is required. Body: `{ "symbol": "AAPL", "investor": "buffett" \| "lynch" }` |
-| `/api/billing/checkout` | POST | Requires Clerk auth. Creates a Stripe Checkout session for Basic |
+| `/api/billing/checkout` | POST | Optional future billing endpoint. Requires Clerk auth and Stripe settings |
 
 ## Monetization
 
 - Anonymous visitor: 1 successful AI analysis before sign-in
-- Free plan: 2 successful AI analyses per day per signed-in user
-- Basic plan: $9/month through Stripe Checkout
+- Free plan: 12 successful AI analyses per day per signed-in user
+- Basic plan: disabled in the current launch flow
 
-For production, connect Stripe webhooks so paid subscriptions automatically add the Clerk user ID to your paid-user storage.
+For a later paid launch, re-enable the upgrade button and connect Stripe webhooks so paid subscriptions automatically add the Clerk user ID to your paid-user storage.
 
 ## Disclaimer
 

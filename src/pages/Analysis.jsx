@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { SignInButton, useAuth } from '@clerk/clerk-react';
-import { getClientId, startCheckout } from '../lib/account';
+import { getClientId } from '../lib/account';
 
 function formatPrice(price, currency = 'USD') {
   if (price == null || Number.isNaN(price)) return '—';
@@ -45,7 +45,6 @@ export default function Analysis() {
   const [error, setError] = useState(null);
   const [upgradeRequired, setUpgradeRequired] = useState(false);
   const [signInRequired, setSignInRequired] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -97,18 +96,6 @@ export default function Analysis() {
 
   const investorName = investor === 'buffett' ? 'Warren Buffett' : 'Peter Lynch';
 
-  const handleUpgrade = async () => {
-    setCheckoutLoading(true);
-    try {
-      const token = await getToken();
-      await startCheckout(token);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setCheckoutLoading(false);
-    }
-  };
-
   if (!symbol) return null;
 
   return (
@@ -152,16 +139,6 @@ export default function Analysis() {
                 Sign in
               </button>
             </SignInButton>
-          )}
-          {upgradeRequired && (
-            <button
-              type="button"
-              className="btn-analyze error-upgrade"
-              onClick={handleUpgrade}
-              disabled={checkoutLoading}
-            >
-              {checkoutLoading ? 'Opening checkout…' : 'Upgrade to Basic — $9/month'}
-            </button>
           )}
           <Link to="/" className="btn-secondary">
             Go back

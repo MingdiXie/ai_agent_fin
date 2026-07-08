@@ -548,7 +548,7 @@ async def analyze_stock(
         raise HTTPException(
             status_code=429,
             detail={
-                "message": "You have used your 2 free analyses today. Upgrade to Basic for $9/month.",
+                "message": "You have used your free analyses for today. Please come back tomorrow.",
                 "usage": usage,
                 "upgradeRequired": True,
             },
